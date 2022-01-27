@@ -4,23 +4,21 @@
   <div class="container py-5">        
     <h1>Все посты пользователя {{author.username}} </h1>
       <h3>Всего постов: {{post_count}} </h3>
-      {% if request.user.is_authenticated %}
-        {% if user.username != author.username %}
-          {% if following %}
-            <a
-              class="btn btn-lg btn-light"
-              href="{% url 'posts:profile_unfollow' author.username %}" role="button"
-            >
-              Отписаться
-            </a>
-          {% else %}
-            <a
-              class="btn btn-lg btn-primary"
-              href="{% url 'posts:profile_follow' author.username %}" role="button"
-            >
-              Подписаться
-            </a>
-          {% endif %}
+      {% if request.user.is_authenticated and user != author %}
+        {% if following %}
+          <a
+            class="btn btn-lg btn-light"
+            href="{% url 'posts:profile_unfollow' author.username %}" role="button"
+          >
+            Отписаться
+          </a>
+        {% else %}
+          <a
+            class="btn btn-lg btn-primary"
+            href="{% url 'posts:profile_follow' author.username %}" role="button"
+          >
+            Подписаться
+          </a>
         {% endif %}
       {% endif %}
       {% for post in page_obj %}

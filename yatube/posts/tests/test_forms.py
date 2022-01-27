@@ -104,41 +104,39 @@ class PostsFormsTests(TestCase):
         self.assertEqual(Post.objects.count(), posts_count)
 
     def test_comment_post(self):
-        form_data = {
-            'text': 'test',
-        }
-        self.authorized_client.post(
-            reverse('posts:post_create'),
-            data=form_data,
-            follow=True
+        created_post = Post.objects.create(
+            author=self.user,
+            text='test',
         )
         comments_count = Comment.objects.count()
         form_data2 = {
             'text': 'test2',
         }
         self.authorized_client.post(
-            reverse('posts:add_comment', args=('1')),
+            reverse('posts:add_comment', kwargs={'post_id': created_post.id}),
             data=form_data2,
             follow=True
         )
         # Убеждаемся, что комментарий был создан
         self.assertEqual(Comment.objects.count(), comments_count + 1)
+        self.assertTrue(
+            Comment.objects.filter(
+                author=self.user.id,
+                text='test2',
+            ).exists()
+        )
 
     def test_unathorized_can_not_comment_post(self):
-        form_data = {
-            'text': 'test',
-        }
-        self.guest_client.post(
-            reverse('posts:post_create'),
-            data=form_data,
-            follow=True
+        created_post = Post.objects.create(
+            author=self.user,
+            text='test',
         )
         comments_count = Comment.objects.count()
         form_data2 = {
             'text': 'test2',
         }
         self.guest_client.post(
-            reverse('posts:add_comment', args=('1')),
+            reverse('posts:add_comment', kwargs={'post_id': created_post.id}),
             data=form_data2,
             follow=True
         )

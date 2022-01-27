@@ -227,7 +227,7 @@ class PostsViewsTests(TestCase):
         count_group_response = response.context['page_obj'][0]
         self.assertNotEqual(count_group_response, created_post)
 
-    def test_follow_unfollow(self):
+    def test_follow(self):
         """Проверка подписки и отписки"""
         created_user = User.objects.create_user(username='test')
         self.authorized_client.get(reverse('posts:profile_follow',
@@ -236,6 +236,10 @@ class PostsViewsTests(TestCase):
                                    follow=True)
         self.assertTrue(Follow.objects.filter(user=PostsViewsTests.user,
                                               author=created_user).exists())
+
+    def test_unfollow(self):
+        created_user = User.objects.create_user(username='test')
+        Follow.objects.create(author=created_user, user=PostsViewsTests.user)
         self.authorized_client.get(reverse('posts:profile_unfollow',
                                            kwargs={'username':
                                                    created_user.username}),
@@ -253,12 +257,12 @@ class PostsViewsTests(TestCase):
             image=PostsViewsTests.uploaded
         )
         response = self.authorized_client.get(reverse('posts:follow_index'))
-        self.assertTrue(created_post.text in response.content.decode('utf-8'))
+        self.assertContains(response, created_post.text)
         Follow.objects.filter(author=created_user,
                               user=PostsViewsTests.user).delete()
         cache.clear()
         response = self.authorized_client.get(reverse('posts:follow_index'))
-        self.assertFalse(created_post.text in response.content.decode('utf-8'))
+        self.assertNotContains(response, created_post.text)
 
     def test_cache(self):
         """Проверка работы кэша"""

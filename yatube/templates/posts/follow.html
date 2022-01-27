@@ -2,7 +2,7 @@
 {% load thumbnail %}
 {% block content %}
   <h1>Подписки пользователя {{user.username}}</h1>
-  {% include 'posts/switcher.html' %}
+  {% include 'includes/switcher.html' %}
   {% if page_obj %}
     {% for post in page_obj %}
       <ul>

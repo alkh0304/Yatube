@@ -6,26 +6,32 @@ User = get_user_model()
 
 
 class Group(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, verbose_name='название')
     slug = models.SlugField(title, unique=True)
-    description = models.TextField()
+    description = models.TextField(verbose_name='описание')
 
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
 
 class Post(CreatedModel):
-    text = models.TextField()
+    text = models.TextField(verbose_name='текст')
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
-                               related_name='posts'
+                               related_name='posts',
+                               verbose_name='автор'
                                )
     group = models.ForeignKey(
         Group,
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
-        related_name='posts'
+        related_name='posts',
+        verbose_name='группа'
     )
     image = models.ImageField(
         'Картинка',
@@ -46,17 +52,22 @@ class Post(CreatedModel):
 class Comment(CreatedModel):
     post = models.ForeignKey(
         Post,
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='comments'
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='пост'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name='comments',
+        verbose_name='автор'
     )
-    text = models.TextField()
+    text = models.TextField(verbose_name='текст')
+
+    class Meta:
+        ordering = ['-pub_date']
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
 
 class Follow(models.Model):
@@ -74,6 +85,8 @@ class Follow(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(fields=['user', 'author'],
                                     name='unique_following')
