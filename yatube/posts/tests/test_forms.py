@@ -123,6 +123,7 @@ class PostsFormsTests(TestCase):
             Comment.objects.filter(
                 author=self.user.id,
                 text='test2',
+                post=created_post.id
             ).exists()
         )
 
