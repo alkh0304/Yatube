@@ -6,10 +6,6 @@
 
 Встроено тестирование на базе Unittest для проверки работоспособности всего проекта (запуск - python manage.py test).
 
-## Статус проекта:
-
-![example workflow](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
-
 ## Технологии и библиотеки:
 - [Python](https://www.python.org/);
 - [Django](https://www.djangoproject.com);
